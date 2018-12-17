@@ -1,18 +1,33 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h2>Thanks </h2>
+    <a href="http://www.mhwdb.kr" target="_blank">
+      http://www.mhwdb.kr
+    </a>
+    
+    <h2>DB </h2>
+    <div>armors {{ armors.length }}</div>
+    <div>charms {{ charms.length }}</div>
+    <div>items {{ items.length }}</div>
+    <div>skills {{ skills.length }}</div>
+    
   </div>
 </template>
 
-<script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator';
+import { State } from 'vuex-class';
 
-export default {
-  name: 'home',
-  components: {
-    HelloWorld
-  }
+import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+
+
+@Component({
+  components: {}
+})
+export default class Home extends Vue {
+  @State('armors') armors;
+  @State('charms') charms;
+  @State('items') items;
+  @State('skills') skills;
 }
 </script>
