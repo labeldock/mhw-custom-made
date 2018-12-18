@@ -10,8 +10,8 @@
           <li class="wanted-list-item" v-for="{idx, name, desc} in filteredSkills" :key="'wl'+idx" :value="idx">
             <div class="name">{{ name }}</div>
             <div class="desc">
-              <div v-for="{ name, desc } in desc" :key="idx+name">
-                {{ name }} {{ desc }}
+              <div v-for="opt in desc" :key="idx+opt.name">
+                {{ opt.name }} {{ opt.desc }}
               </div>
             </div>
             <div class="controls">
@@ -26,15 +26,17 @@
     </div>
     <div class="suggest">
       <ul class="wanted-skills">
-        <li class="wanted-skills-item" v-for="{idx, name, desc} in wantedSkills" :key="'ws'+idx">
-          <div class="name">{{ name }}</div>
+        <li class="wanted-skills-item" v-for="skill in wantedSkills" :key="'ws'+skill.idx">
+          <div class="name">{{ skill.name }}</div>
           <div class="desc">
-            <div v-for="{ name, desc } in desc" :key="idx+name">
-              <input type="radio" :name="`ws${idx}${name}`">{{ name }} {{ desc }}
+            <div v-for="(opt,index) in skill.desc" :key="skill.idx+index+opt.name">
+              <VERadio v-model="skill.$selected" :value="index">
+                {{ opt.name }} {{ opt.desc }}
+              </VERadio>
             </div>
           </div>
           <div class="controls">
-            <button @click="wantedSkillWithIdx(idx)">제외</button>
+            <button @click="removeWantedSkillWithIdx(skill.idx)">제외</button>
           </div>
         </li>
       </ul>
@@ -51,9 +53,14 @@ import { State } from 'vuex-class';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import Hangul from 'hangul-js';
 
+import { removeValue } from '@sepalang/pado';
+import VERadio from '@sepalang/pado/packages/vecom/src/components/PadoRadio.vue';
+
 
 @Component({
-  components: {}
+  components: {
+    VERadio
+  }
 })
 export default class Home extends Vue {
   @State('armors') armors;
@@ -73,10 +80,6 @@ export default class Home extends Vue {
       return !wantedSkills.some(({ idx:alreadyIdx })=>alreadyIdx===idx);
     });
 
-    if(wantedSkills){
-      
-    }
-    
     if(!wantedText){
       return skills;
     }
@@ -97,7 +100,13 @@ export default class Home extends Vue {
     
     const skill = skills.find(({idx})=>idx===wantedIdx);
     
-    wantedSkills.push({ ...skill });
+    wantedSkills.push({ ...skill, $selected:null });
+  }
+  
+  removeWantedSkillWithIdx (removeIdx){
+    const wantedSkills = this.wantedSkills;
+    const removeTarget = wantedSkills.find(({ idx })=>{ return removeIdx === idx });
+    removeValue(wantedSkills,removeTarget);
   }
   
   selectedWantedItem (datum){
