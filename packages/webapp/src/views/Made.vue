@@ -21,22 +21,12 @@
             </div>
           </li>
         </ul>
-      
-        <div>
-          <br>
-        
-          <div>
-            {{ item }}
-          </div>
-        </div>
       </div>
       <div class="mh-list-section">
         <header>
           <span class="ico">스텟 양 고르기</span>
         </header>
-        <div class="top">
-        
-        </div>
+        <div class="top"></div>
         <ul>
           <li v-for="skill in wantedSkills" :key="'ws'+skill.idx">
             <div class="name">{{ skill.name }}</div>
@@ -62,13 +52,25 @@
       </div>
       <div class="mh-list-section">
         <header>
-          선택한 목록
+          선택한 스텟 목록
         </header>
         <div class="top" style="text-align:center;">
           <div class="mh-button">
             스크롤을 내리시면 다음단계가 보입니다.
           </div>
         </div>
+        <ul class="mh-simple">
+          <li v-for="(skill, index) in availableSkills">
+            <span>{{ index+1 }} - {{ skill.name }}</span>
+            <div class="controls" style="padding-top:8px">
+              <VEStet v-model="skill.$selected" style="display:inline-block">
+                <VEOpt v-for="(opt,index) in skill.desc" :key="index" :value="index" readonly>{{ opt.name }} {{ opt.desc }}</VEOpt>
+              </VEStet>
+              &nbsp;
+              <span style="position:relative;top:-3px;">{{ skill.$selected + 1 }}</span>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
     <div class="page-custommade">
@@ -148,11 +150,11 @@ export default class Home extends Vue {
   }
   
   mounted (){
-    //const skills = this.skills;
-    //for(let i=0,l=3;i<l;i++){
-    //  const { idx } = skills[i];
-    //  this.wantedSkillWithIdx(idx);
-    //}
+    const skills = this.skills;
+    for(let i=0,l=3;i<l;i++){
+      const { idx } = skills[i];
+      this.wantedSkillWithIdx(idx);
+    }
   }
   
   wantedSkillWithIdx (wantedIdx){
@@ -174,6 +176,13 @@ export default class Home extends Vue {
     this.item = item;
   }
   
+  get availableSkills (){
+    const wantedSkills = this.wantedSkills;
+    
+    return wantedSkills.filter(({ $selected })=>{
+      return typeof $selected === "number"
+    })
+  }
   
 }
 </script>
@@ -183,8 +192,6 @@ export default class Home extends Vue {
     display: flex;
     flex-flow: row nowrap;
     text-align:left;
-    
-    
     
     > div {
       flex: 1;

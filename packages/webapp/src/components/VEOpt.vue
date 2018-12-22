@@ -1,5 +1,5 @@
 <template>
-  <li class="ve-opt" :selected="isActive">
+  <li class="ve-opt" :selected="isActive" :readonly="isReadonly ? '' : null">
     <div class="ve-opt-button" @click="input"></div>
     <div class="ve-opt-text"><slot></slot></div>
   </li>
@@ -16,9 +16,20 @@ export default class VEOpt extends Vue {
   
   @Inject('select') select;
   @Prop() value;
+  @Prop() readonly;
+  
+  get isReadonly (){
+    const readonly = this.readonly;
+    return typeof readonly === "string";
+  }
   
   input (){
     const select = this.select;
+    const isReadonly = this.isReadonly;
+    if(isReadonly){
+      return;
+    }
+    
     select.input(this.value,this);
   }
   

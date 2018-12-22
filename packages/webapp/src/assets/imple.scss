@@ -110,5 +110,19 @@ body {
         top:40px;
       }
     }
+    
+    &.mh-simple {
+      > li {
+        &:first-child {
+          border-top:dashed 2px rgba(255,255,255,.1);
+        }
+        padding:5px 10px;
+        border-top:none;
+        min-height:initial;
+        .controls {
+          top:0px;
+        }
+      }
+    }
   }
 }
