@@ -1,0 +1,82 @@
+@import 'fn.scss';
+
+#master-app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+#master-nav {
+  padding: 30px;
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+    &.router-link-exact-active {
+      color: #42b983;
+    }
+  }
+}
+
+@mixin mh-text-variant (){
+  color:white;
+  text-shadow:-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+@mixin mh-black-bg ($alpha:.7){
+  background:rgba(0,0,0,$alpha);
+  @include mh-text-variant;
+}
+
+.mh-box {
+  @include block(fit-content);
+  @include mh-black-bg;
+  margin:0 auto;
+  padding:10px;
+  box-shadow:-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+
+.mh-button {
+  @include button-variant(fit-content);
+  padding:5px 10px;
+  border:2px solid #A2948B;
+  @include mh-black-bg(.4);
+  &:hover {
+    @include mh-black-bg(.5);
+  };
+}
+
+.mh-list-section {
+  @include mh-black-bg;
+  border-top:8px double rgba(255,255,255,.3);
+  border-bottom:8px double rgba(255,255,255,.3);
+  > header{
+    
+    color:#98aEbE;
+    font-weight:bold;
+    font-size:24px;
+    padding:5px;
+    text-align:center;
+  }
+  .top {
+    padding:10px 10px;
+    [type=text]{
+      @include block(fill-available);
+      padding:5px 10px;
+    }
+  }
+  > ul {
+    list-style:none;
+    li {
+      position:relative;
+      padding:10px 10px;
+      border-bottom:dashed 2px rgba(255,255,255,.1);
+      .name {
+        font-weight:bold;
+      }
+      .desc {
+        font-size:12px;
+      }
+    }
+  }
+}

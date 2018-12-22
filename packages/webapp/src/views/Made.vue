@@ -1,30 +1,38 @@
 <template>
   <div class="page-custommade">
-    
-    <div class="wanted">
-      Wanted
+    <div class="mh-list-section wanted">
+      <header>
+        원하는 스킬
+      </header>
+      <div class="top">
+        <input type="text" v-model="wantedText" placeholder="원하는 능력을 검색하세요">
+      </div>
+      <ul class="wanted-list" @input="selectedWantedItem">
+        <li class="wanted-list-item" v-for="{idx, name, desc} in filteredSkills" :key="'wl'+idx" :value="idx">
+          <div class="name">{{ name }}</div>
+          <div class="desc">
+            <div v-for="opt in desc" :key="idx+opt.name">
+              {{ opt.name }} {{ opt.desc }}
+            </div>
+          </div>
+          <div class="controls">
+            <button class="mh-button" @click="wantedSkillWithIdx(idx)">추가</button>
+          </div>
+        </li>
+      </ul>
+      
       <div>
-        <input type="text" v-model="wantedText">
         <br>
-        <ul class="wanted-list" @input="selectedWantedItem">
-          <li class="wanted-list-item" v-for="{idx, name, desc} in filteredSkills" :key="'wl'+idx" :value="idx">
-            <div class="name">{{ name }}</div>
-            <div class="desc">
-              <div v-for="opt in desc" :key="idx+opt.name">
-                {{ opt.name }} {{ opt.desc }}
-              </div>
-            </div>
-            <div class="controls">
-              <button @click="wantedSkillWithIdx(idx)">추가</button>
-            </div>
-          </li>
-        </ul>
+        
         <div>
           {{ item }}
         </div>
       </div>
     </div>
-    <div class="suggest">
+    <div class="mh-list-section suggest">
+      <header>
+        스텟 양 고르기
+      </header>
       <ul class="wanted-skills">
         <li class="wanted-skills-item" v-for="skill in wantedSkills" :key="'ws'+skill.idx">
           <div class="name">{{ skill.name }}</div>
@@ -41,8 +49,10 @@
         </li>
       </ul>
     </div>
-    <div class="equip">
-      
+    <div class="mh-list-section equip">
+      <header>
+        나의 장비
+      </header>
     </div>
   </div>
 </template>
@@ -127,34 +137,24 @@ export default class Home extends Vue {
     
     .wanted {
       flex: 1;
-      background-color:#cee;
       .wanted-list {
         overflow:auto;
         height:70vh;
         min-height:600px;
         .wanted-list-item {
           position:relative;
-          .name {
-            font-weight:bold;
-          }
-          .desc {
-            font-size:12px;
-          }
+          
           .controls {
             position:absolute;
             right:5px;
             top:50%;
             transform:translateY(-50%);
           }
-          + .wanted-list-item {
-            margin-top:10px;
-          }
         }
       }
     }
     .suggest {
       flex: 1;
-      background-color:#ece;
       .wanted-skills {
         overflow:auto;
         height:70vh;
@@ -181,7 +181,6 @@ export default class Home extends Vue {
     }
     .equip {
       flex: 1;
-      background-color:#eec;
     }
     
   }

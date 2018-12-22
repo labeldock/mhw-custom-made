@@ -1,15 +1,25 @@
 <template>
   <div class="home">
-    <h2>Thanks </h2>
-    <a href="http://www.mhwdb.kr" target="_blank">
-      http://www.mhwdb.kr
-    </a>
+    <img src="@/assets/mhw-logo.png">
+    <div class="mh-box" style="margin-top:30px;">
+      <header>
+        Thanks 
+      </header>
+      <a href="http://www.mhwdb.kr" target="_blank">
+        http://www.mhwdb.kr
+      </a>
+    </div>
     
-    <h2>DB </h2>
-    <div>armors {{ armors.length }}</div>
-    <div>charms {{ charms.length }}</div>
-    <div>items {{ items.length }}</div>
-    <div>skills {{ skills.length }}</div>
+    <div class="mh-box" style="margin-top:30px;">
+      <header>
+        DB
+      </header>
+      <div>armors {{ armors.length }}</div>
+      <div>charms {{ charms.length }}</div>
+      <div>items {{ items.length }}</div>
+      <div>skills {{ skills.length }}</div>
+    </div>
+    
     
   </div>
 </template>
