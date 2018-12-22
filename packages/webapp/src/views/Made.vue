@@ -60,7 +60,7 @@
           </div>
         </div>
         <ul class="mh-simple">
-          <li v-for="(skill, index) in availableSkills">
+          <li v-for="(skill, index) in availableSkills" :key="index">
             <span>{{ index+1 }} - {{ skill.name }}</span>
             <div class="controls" style="padding-top:8px">
               <VEStet v-model="skill.$selected" style="display:inline-block">
@@ -78,21 +78,61 @@
         <header>
           <span>셋팅완성도</span>
         </header>
-        <div class="top"></div>
-        <ul></ul>
+        <div class="top">
+          <VELoading :total="totalSkillsCount" :value="restSkillsCount"></VELoading>
+          {{totalSkillsCount}} {{restSkillsCount}}
+        </div>
+        <ul class="mh-simple">
+          <li v-for="(skill, index) in availableSkills" :key="index">
+            <span>{{ index+1 }} - {{ skill.name }}</span>
+            <div class="controls" style="padding-top:8px">
+              <VEStet v-model="skill.$selected" style="display:inline-block">
+                <VEOpt v-for="(opt,index) in skill.desc" :key="index" :value="index" readonly>{{ opt.name }} {{ opt.desc }}</VEOpt>
+              </VEStet>
+              &nbsp;
+              <span style="position:relative;top:-3px;">{{ skill.$selected + 1 }}</span>
+            </div>
+          </li>
+        </ul>
       </div>
       <div class="mh-list-section">
         <header>
           <span class="ico">장비선택</span>
         </header>
         <div class="top"></div>
+        <ul>
+          <li v-for="set in userSettings">
+            <div class="top-controls">
+              <button class="mh-button" @click="openPartList(set.part)">장비찾기</button>
+            </div>
+            <div class="name">
+              [{{ set.part }}] <span v-if="set.equip"> {{ set.equip.name }} </span>
+            </div>
+            <MHEquipDesc class="desc" :data="set.equip"></MHEquipDesc>
+          </li>
+        </ul>
       </div>
       <div class="mh-list-section">
         <header>
+          {{ recommandedSearch.part || '' }}
           추천목록
+          ({{ remomandedList.length }})
         </header>
-        <div class="top"></div>
-        <div style="text-align:center;"></div>
+        <div class="top">
+          
+        </div>
+        <ul>
+          <li v-for="good in remomandedList" :key="good.idx">
+            <div class="top-controls">
+              <button class="mh-button" @click="equipArmor(good)">착용하기</button>
+            </div>
+            <div class="name">
+              {{ good.name }}
+              <span class="level">{{good.rare}} ({{ good.set_level }})</span>
+            </div>
+            <MHEquipDesc class="desc" :data="good"></MHEquipDesc>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -103,10 +143,11 @@ import { State } from 'vuex-class';
 
 import VEStet from '@/components/VEStet.vue'; // @ is an alias to /src
 import VEOpt from '@/components/VEOpt.vue';
-
+import VELoading from '@/components/VELoading.vue';
+import MHEquipDesc from '@/components/MHEquipDesc.vue';
 import Hangul from 'hangul-js';
 
-import { removeValue } from '@sepalang/pado';
+import { removeValue, sort } from '@sepalang/pado';
 import VERadio from '@sepalang/pado/packages/vecom/src/components/PadoRadio.vue';
 
 
@@ -114,7 +155,9 @@ import VERadio from '@sepalang/pado/packages/vecom/src/components/PadoRadio.vue'
   components: {
     VERadio,
     VEStet,
-    VEOpt
+    VEOpt,
+    VELoading,
+    MHEquipDesc
   }
 })
 export default class Home extends Vue {
@@ -126,6 +169,39 @@ export default class Home extends Vue {
   wantedText:string="";
   item:any=null;
   wantedSkills:Array<any>=[];
+  
+  userSettings:Array<any> = [
+    {
+      part:"머리",
+      equip:null,
+      slots:[]
+    },
+    {
+      part:"몸통",
+      equip:null,
+      slots:[]
+    },
+    {
+      part:"팔",
+      equip:null,
+      slots:[]
+    },
+    {
+      part:"허리",
+      equip:null,
+      slots:[]
+    },
+    {
+      part:"다리",
+      equip:null,
+      slots:[]
+    }
+  ];
+  
+  recommandedSearch = {
+    part:null
+  };
+  
   
   get filteredSkills ():Array<{ idx:number, name:string }> {
     
@@ -150,11 +226,11 @@ export default class Home extends Vue {
   }
   
   mounted (){
-    const skills = this.skills;
-    for(let i=0,l=3;i<l;i++){
-      const { idx } = skills[i];
-      this.wantedSkillWithIdx(idx);
-    }
+    //const skills = this.skills;
+    //for(let i=0,l=3;i<l;i++){
+    //  const { idx } = skills[i];
+    //  this.wantedSkillWithIdx(idx);
+    //}
   }
   
   wantedSkillWithIdx (wantedIdx){
@@ -178,10 +254,64 @@ export default class Home extends Vue {
   
   get availableSkills (){
     const wantedSkills = this.wantedSkills;
-    
+    if(!wantedSkills) return [];
     return wantedSkills.filter(({ $selected })=>{
       return typeof $selected === "number"
     })
+  }
+  
+  get totalSkillsCount (){
+    const availableSkills = this.availableSkills;
+    let count = 0;
+    availableSkills.forEach(({ desc })=>{
+      count += desc.length;
+    })
+    return count;
+  }
+  
+  get restSkillsCount (){
+    const availableSkills = this.availableSkills;
+    let count = 0; 
+    return count;
+  }
+  
+  openPartList (partName){
+    this.recommandedSearch.part = partName;
+  }
+  
+  equipArmor (armor){
+    const { part, name } = armor;
+    const userSettings = this.userSettings
+    const targetSetting = userSettings.find(({ part:thisPart })=>thisPart===part);
+    
+    if(!targetSetting){
+      alert("예상치 못한 오류");
+    }
+    
+    targetSetting.equip = armor;
+  }
+  
+  get remomandedList (){
+    const recommandedSearch = this.recommandedSearch;
+    const armors = this.armors;
+    
+    const { part } = recommandedSearch;
+    if(!part) return [];
+    
+    let list = armors.filter(({ part:partName })=>partName===part);
+    
+    //rare
+    list = sort(list,({ rare:a },{ rare:b })=>Number(a) > Number(b));
+    
+    //slot
+    list = sort(list,({ slots:a },{ slots:b })=>{
+      if(a.length === b.length){
+        return a[0] > b[0];
+      }
+      return a.length > b.length
+    });
+    
+    return list;
   }
   
 }

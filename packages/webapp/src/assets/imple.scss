@@ -99,15 +99,41 @@ body {
         font-weight:bold;
         background-color:#5A5A5A;
         padding:5px 10px;
+        .level {
+          opacity:.3;
+        }
       }
       .desc {
         font-size:12px;
         padding:5px 10px;
+        .slots {
+          list-style:none;
+          > li {
+            @include inline-block(15px, 15px);
+            text-align:center;
+            border:1px solid gray;
+            position:relative;
+            + li {
+              margin-left:10px;
+              &:before {
+                position:absolute;
+                content:"-";
+                left:-10px;
+                width:8px;
+              };
+            }
+          }
+        }
       }
       .controls {
         position:absolute;
         right:10px;
         top:40px;
+      }
+      .top-controls {
+        position:absolute;
+        right:10px;
+        top:3px;
       }
     }
     
