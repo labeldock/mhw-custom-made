@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import armors from '../db/armors.json';
-import charms from '../db/charms.json';
-import items from '../db/items.json';
-import skills from '../db/skills.json';
+import armors from './assets/armors.json';
+import charms from './assets/charms.json';
+import items from './assets/items.json';
+import skills from './assets/skills.json';
 
 Vue.use(Vuex)
 

@@ -298,18 +298,7 @@ export default class Home extends Vue {
     const { part } = recommandedSearch;
     if(!part) return [];
     
-    let list = armors.filter(({ part:partName })=>partName===part);
-    
-    //rare
-    list = sort(list,({ rare:a },{ rare:b })=>Number(a) > Number(b));
-    
-    //slot
-    list = sort(list,({ slots:a },{ slots:b })=>{
-      if(a.length === b.length){
-        return a[0] > b[0];
-      }
-      return a.length > b.length
-    });
+    let list = armors[part];
     
     return list;
   }

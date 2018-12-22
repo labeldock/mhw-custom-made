@@ -14,7 +14,7 @@
       <header>
         DB
       </header>
-      <div>armors {{ armors.length }}</div>
+      <div>armors {{ armorsLength }}</div>
       <div>charms {{ charms.length }}</div>
       <div>items {{ items.length }}</div>
       <div>skills {{ skills.length }}</div>
@@ -39,5 +39,10 @@ export default class Home extends Vue {
   @State('charms') charms;
   @State('items') items;
   @State('skills') skills;
+  
+  get armorsLength (){
+    const armors = this.armors;
+    return Object.keys(armors).reduce((dest,partName)=>dest + armors[partName].length,0);
+  }
 }
 </script>
