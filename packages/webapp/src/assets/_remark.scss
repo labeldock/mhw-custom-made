@@ -862,22 +862,22 @@
 }
 
 @mixin icon-variant($url:false,$icon-width:auto,$icon-height:auto,$icon-position:false,$icon-size:false){
-    @include inline-block;
-    background-image:$url;
-	background-repeat:no-repeat;
-	@if $icon-position {
-		background-position:$icon-position;
-	} @else {
-		background-position:left center;
-	}
-    padding-left:$icon-width;
-    min-width:$icon-width;
-	min-height:$icon-height;
-	@if $icon-size != false {
-		background-size:$icon-size;
-	}
-	//with content
-	@content;
+  @include inline-block;
+  background-image:$url;
+  background-repeat:no-repeat;
+  @if $icon-position {
+    background-position:$icon-position;
+  } @else {
+    background-position:left center;
+  }
+  padding-left:$icon-width;
+  min-width:$icon-width;
+  min-height:$icon-height;
+  @if $icon-size != false {
+    background-size:$icon-size;
+  }
+  //with content
+  @content;
 }
 
 @mixin icon-right-variant($url:false,$icon-width:auto,$icon-height:auto,$icon-position:false,$icon-size:false){

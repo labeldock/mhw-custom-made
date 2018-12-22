@@ -18,12 +18,20 @@
   }
 }
 
+body {
+  background-color:#5E5E63;
+}
+
+.ghosted {
+  opacity:.5;
+}
+
 @mixin mh-text-variant (){
   color:white;
   text-shadow:-1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
 
-@mixin mh-black-bg ($alpha:.7){
+@mixin mh-black-bg ($alpha:.6){
   background:rgba(0,0,0,$alpha);
   @include mh-text-variant;
 }
@@ -40,18 +48,29 @@
   @include button-variant(fit-content);
   padding:5px 10px;
   border:2px solid #A2948B;
+  font-size:12px;
+  font-weight:bold;
   @include mh-black-bg(.4);
   &:hover {
     @include mh-black-bg(.5);
   };
+  &[disabled]{
+    opacity:.4;
+  }
 }
 
 .mh-list-section {
   @include mh-black-bg;
-  border-top:8px double rgba(255,255,255,.3);
-  border-bottom:8px double rgba(255,255,255,.3);
+  border-top:5px double rgba(255,255,255,.3);
+  border-bottom:5px double rgba(255,255,255,.3);
+  + .mh-list-section {
+    border-left:10px double rgba(255,255,255,.3);
+  }
   > header{
-    
+    .ico {
+      @include icon-variant(url('~/mh-header-icon.png'),30px,24px);
+    }
+    min-height:45px;
     color:#98aEbE;
     font-weight:bold;
     font-size:24px;
@@ -59,23 +78,36 @@
     text-align:center;
   }
   .top {
+    min-height:40px;
     padding:10px 10px;
     [type=text]{
       @include block(fill-available);
       padding:5px 10px;
     }
   }
+  .stet {
+    padding:10px 10px;
+  }
   > ul {
     list-style:none;
-    li {
+    > li {
       position:relative;
-      padding:10px 10px;
       border-bottom:dashed 2px rgba(255,255,255,.1);
+      border-top:3px solid #827A53;
+      min-height:75px;
       .name {
         font-weight:bold;
+        background-color:#5A5A5A;
+        padding:5px 10px;
       }
       .desc {
         font-size:12px;
+        padding:5px 10px;
+      }
+      .controls {
+        position:absolute;
+        right:10px;
+        top:40px;
       }
     }
   }

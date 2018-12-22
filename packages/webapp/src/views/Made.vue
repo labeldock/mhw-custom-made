@@ -1,58 +1,97 @@
 <template>
-  <div class="page-custommade">
-    <div class="mh-list-section wanted">
-      <header>
-        원하는 스킬
-      </header>
-      <div class="top">
-        <input type="text" v-model="wantedText" placeholder="원하는 능력을 검색하세요">
-      </div>
-      <ul class="wanted-list" @input="selectedWantedItem">
-        <li class="wanted-list-item" v-for="{idx, name, desc} in filteredSkills" :key="'wl'+idx" :value="idx">
-          <div class="name">{{ name }}</div>
-          <div class="desc">
-            <div v-for="opt in desc" :key="idx+opt.name">
-              {{ opt.name }} {{ opt.desc }}
+  <div>
+    <div class="page-custommade">
+      <div class="mh-list-section">
+        <header>
+          <span class="ico">원하는 스킬</span>
+        </header>
+        <div class="top">
+          <input type="text" v-model="wantedText" placeholder="원하는 능력을 검색하세요">
+        </div>
+        <ul class="wanted-list" @input="selectedWantedItem">
+          <li class="wanted-list-item" v-for="{idx, name, desc} in filteredSkills" :key="'wl'+idx" :value="idx">
+            <div class="name">{{ name }}</div>
+            <div class="desc" style="width:calc(100% - 70px)">
+              <div v-for="opt in desc" :key="idx+opt.name">
+                {{ opt.name }} {{ opt.desc }}
+              </div>
             </div>
-          </div>
-          <div class="controls">
-            <button class="mh-button" @click="wantedSkillWithIdx(idx)">추가</button>
-          </div>
-        </li>
-      </ul>
+            <div class="controls">
+              <button class="mh-button" @click="wantedSkillWithIdx(idx)">추가</button>
+            </div>
+          </li>
+        </ul>
       
-      <div>
-        <br>
-        
         <div>
-          {{ item }}
+          <br>
+        
+          <div>
+            {{ item }}
+          </div>
+        </div>
+      </div>
+      <div class="mh-list-section">
+        <header>
+          <span class="ico">스텟 양 고르기</span>
+        </header>
+        <div class="top">
+        
+        </div>
+        <ul>
+          <li v-for="skill in wantedSkills" :key="'ws'+skill.idx">
+            <div class="name">{{ skill.name }}</div>
+            <div class="stet">
+              <VEStet v-model="skill.$selected">
+                <VEOpt v-for="(opt,index) in skill.desc" :key="index" :value="index">{{ opt.name }} {{ opt.desc }}</VEOpt>
+              </VEStet>
+            </div>
+            <div class="desc">
+              <span v-if="skill.desc[skill.$selected]">
+                {{skill.desc[skill.$selected].name}} {{skill.desc[skill.$selected].desc}}
+              </span>
+              <span class="ghosted" v-else>
+                스킬을 선택해 주세요
+              </span>
+            </div>
+            <div class="controls">
+              <button class="mh-button" @click="skill.$selected = null" :disabled="typeof skill.$selected !== 'number'">초기화</button>&nbsp;
+              <button class="mh-button" @click="removeWantedSkillWithIdx(skill.idx)">제외</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="mh-list-section">
+        <header>
+          선택한 목록
+        </header>
+        <div class="top" style="text-align:center;">
+          <div class="mh-button">
+            스크롤을 내리시면 다음단계가 보입니다.
+          </div>
         </div>
       </div>
     </div>
-    <div class="mh-list-section suggest">
-      <header>
-        스텟 양 고르기
-      </header>
-      <ul class="wanted-skills">
-        <li class="wanted-skills-item" v-for="skill in wantedSkills" :key="'ws'+skill.idx">
-          <div class="name">{{ skill.name }}</div>
-          <div class="desc">
-            <div v-for="(opt,index) in skill.desc" :key="skill.idx+index+opt.name">
-              <VERadio v-model="skill.$selected" :value="index">
-                {{ opt.name }} {{ opt.desc }}
-              </VERadio>
-            </div>
-          </div>
-          <div class="controls">
-            <button @click="removeWantedSkillWithIdx(skill.idx)">제외</button>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="mh-list-section equip">
-      <header>
-        나의 장비
-      </header>
+    <div class="page-custommade">
+      <div class="mh-list-section">
+        <header>
+          <span>셋팅완성도</span>
+        </header>
+        <div class="top"></div>
+        <ul></ul>
+      </div>
+      <div class="mh-list-section">
+        <header>
+          <span class="ico">장비선택</span>
+        </header>
+        <div class="top"></div>
+      </div>
+      <div class="mh-list-section">
+        <header>
+          추천목록
+        </header>
+        <div class="top"></div>
+        <div style="text-align:center;"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -60,7 +99,9 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { State } from 'vuex-class';
 
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import VEStet from '@/components/VEStet.vue'; // @ is an alias to /src
+import VEOpt from '@/components/VEOpt.vue';
+
 import Hangul from 'hangul-js';
 
 import { removeValue } from '@sepalang/pado';
@@ -69,7 +110,9 @@ import VERadio from '@sepalang/pado/packages/vecom/src/components/PadoRadio.vue'
 
 @Component({
   components: {
-    VERadio
+    VERadio,
+    VEStet,
+    VEOpt
   }
 })
 export default class Home extends Vue {
@@ -104,12 +147,18 @@ export default class Home extends Vue {
     return searched;
   }
   
+  mounted (){
+    //const skills = this.skills;
+    //for(let i=0,l=3;i<l;i++){
+    //  const { idx } = skills[i];
+    //  this.wantedSkillWithIdx(idx);
+    //}
+  }
+  
   wantedSkillWithIdx (wantedIdx){
     const skills = this.skills;
     const wantedSkills = this.wantedSkills;
-    
     const skill = skills.find(({idx})=>idx===wantedIdx);
-    
     wantedSkills.push({ ...skill, $selected:null });
   }
   
@@ -135,53 +184,25 @@ export default class Home extends Vue {
     flex-flow: row nowrap;
     text-align:left;
     
-    .wanted {
+    
+    
+    > div {
       flex: 1;
-      .wanted-list {
-        overflow:auto;
-        height:70vh;
-        min-height:600px;
-        .wanted-list-item {
-          position:relative;
-          
-          .controls {
-            position:absolute;
-            right:5px;
-            top:50%;
-            transform:translateY(-50%);
-          }
-        }
+      opacity:.6;
+      transition:opacity .3s;
+      &:hover {
+        opacity:1;
       }
-    }
-    .suggest {
-      flex: 1;
-      .wanted-skills {
-        overflow:auto;
-        height:70vh;
-        min-height:600px;
-        .wanted-skills-item {
-          position:relative;
-          .name {
-            font-weight:bold;
-          }
-          .desc {
-            font-size:12px;
-          }
-          .controls {
-            position:absolute;
-            right:5px;
-            top:50%;
-            transform:translateY(-50%);
-          }
-          + .wanted-skills-item {
-            margin-top:10px;
-          }
-        }
-      }
-    }
-    .equip {
-      flex: 1;
     }
     
+    > div > ul {
+      overflow:auto;
+      height:calc(100vh - 240px);
+      min-height:600px;
+    }
+    
+    + .page-custommade {
+      margin-top:120px;
+    }
   }
 </style>
