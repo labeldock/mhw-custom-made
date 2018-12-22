@@ -1,6 +1,7 @@
 const axios = require("axios");
 const path = require("path");
 const fs = require("fs");
+const mkdirp = require('mkdirp');
 const baseUrl = "http://www.mhwdb.kr/apis";
 
 const dbPath = path.join(__dirname, "../db");
@@ -12,6 +13,8 @@ const categories = {
   charms:`${baseUrl}/charms`
 };
 
+
+mkdirp.sync(dbPath);
 
 Object.keys(categories).map(async categoryName=>{
   const categoryUrl = categories[categoryName];
