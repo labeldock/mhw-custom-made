@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "fetchdb": "node fetch/kr",
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "node beforeBuild && vue-cli-service serve",
+    "build": "node beforeBuild && vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -20,6 +20,7 @@
     "vuex-class": "^0.3.1"
   },
   "devDependencies": {
+    "@sepalang/runner": "^0.9.0",
     "@vue/cli-plugin-babel": "^3.2.0",
     "@vue/cli-plugin-eslint": "^3.2.0",
     "@vue/cli-plugin-typescript": "^3.2.0",
@@ -29,6 +30,7 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0-0",
+    "lodash": "^4.17.11",
     "mkdirp": "^0.5.1",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",

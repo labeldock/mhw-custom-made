@@ -9,11 +9,7 @@ const dbPath = path.join(__dirname, "../db");
 const categories = {
   skills:{categoryUrl:`${baseUrl}/skills`},
   items:{categoryUrl:`${baseUrl}/items`},
-  armors:{categoryUrl:`${baseUrl}/armors`,map:(datum)=>{
-    const { slots } = datum;
-    datum.slots = (slots||"").split("").map(v=>Number(v));
-    return datum;
-  }},
+  armors:{categoryUrl:`${baseUrl}/armors`},
   charms:{categoryUrl:`${baseUrl}/charms`}
 };
 

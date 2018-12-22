@@ -20,7 +20,6 @@ export default class VEStet extends Vue {
   @Model("commit") model;
   
   input (value){
-    console.log("value")
     this.$emit("commit", value);
   }
   
